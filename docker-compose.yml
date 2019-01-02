@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  consul0:
+    image: consul:latest
+    command: agent -server -bootstrap-expect 3 -client 0.0.0.0
+    ports:
+      - 8500:8500
+
+  consul1:
+    image: consul:latest
+    command: agent -server -bootstrap-expect 3 -client 0.0.0.0
+    ports:
+      - 8501:8500
+
+  consul2:
+    image: consul:latest
+    command: agent -server -bootstrap-expect 3 -client 0.0.0.0
+    ports:
+      - 8502:8500

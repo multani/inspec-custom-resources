@@ -1,0 +1,24 @@
+name: consul
+title: Consul
+maintainer: Jonathan Ballet
+copyright: Jonathan ballet
+copyright_email: jon@multani.info
+license: MIT
+summary: Verify the configuration of a Consul cluster
+version: 1.0.0
+#depends:
+#  - name: profile
+#    path: ../path/to/profile
+
+attributes:
+  - name: consul_http_addr
+    type: string
+    default: http://localhost:8500
+
+  - name: minimum_servers
+    type: numeric
+    default: 3
+
+  - name: datacenter
+    type: string
+    default: dc1
