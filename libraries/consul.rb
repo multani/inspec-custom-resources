@@ -51,7 +51,7 @@ class ConsulCluster < Inspec.resource(1)
     end
   end
 
-  def datacenter
+  def datacenters
     begin
       Diplomat::Datacenter.get
     rescue

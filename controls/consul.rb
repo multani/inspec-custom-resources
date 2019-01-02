@@ -10,6 +10,6 @@ control 'consul-cluster' do
     it { should be_reachable }
     it { should have_leader }
     its('servers_count'){ should be >= minimum_servers }
-    its('datacenter'){ should include datacenter }
+    its('datacenters'){ should include datacenter }
   end
 end
