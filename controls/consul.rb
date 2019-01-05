@@ -7,7 +7,6 @@ control 'consul-cluster' do
   desc 'The Consul cluster should be up and running'
 
   describe consul_cluster(consul_http_addr) do
-    it { should be_reachable }
     it { should have_leader }
     its('servers_count'){ should be >= minimum_servers }
     its('datacenters'){ should include datacenter }

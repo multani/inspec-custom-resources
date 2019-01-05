@@ -18,52 +18,54 @@ class ConsulCluster < Inspec.resource(1)
       config.url = @url
       #config.acl_token =  "xxxxxxxx-yyyy-zzzz-1111-222222222222"
     end
-  end
 
-  def reachable?
+    query = inspec.http(url)
     begin
-      Diplomat::Status.leader()
-    rescue Faraday::ConnectionFailed
-      return false
-    rescue
+      status = query.status()
+    rescue => e # something wrong happened while checking the HTTP status
+      fail_resource("Consul cluster unreachable: #{e}")
     end
-
-    true
   end
 
   def has_leader?
-    begin
-      Diplomat::Status.leader() != ""
-    rescue
-      false
-    end
+    http_json("#{@url}/v1/status/leader") != ''
   end
 
   def servers_count
-    servers = []
-    begin
-      Diplomat::Agent.members().each do |member|
-        servers << member unless member['Tags']['role'] != 'consul' or member['Status'] != 1
-      end
-      servers.count
-    rescue
-      0
+    members = http_json("#{@url}/v1/agent/members")
+
+    servers = 0
+    members.each do |member|
+      servers += 1 unless member['Tags']['role'] != 'consul' or member['Status'] != 1
     end
+    servers
   end
 
   def datacenters
-    begin
-      Diplomat::Datacenter.get
-    rescue
-      []
-    end
+    http_json("#{@url}/v1/catalog/datacenters")
   end
 
   def to_s
-    "Consul(#{@url})"
+    "Consul at #{@url}"
   end
 
   def method_missing(name)
     @params[name.to_s]
+  end
+
+  private
+
+  def http_json(url)
+    query = inspec.http(url)
+    if query.status != 200
+      raise Inspec::Exceptions::ResourceFailed, "Consul query on #{url} return HTTP code #{query.status}"
+    end
+
+    begin
+      require 'json'
+      JSON.parse(query.body)
+    rescue => e
+      raise Inspec::Exceptions::ResourceFailed, "Unable to parse JSON from Consul query on #{url}: #{e.message}"
+    end
   end
 end
