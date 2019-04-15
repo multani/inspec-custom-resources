@@ -1,5 +1,3 @@
-require 'diplomat'
-
 class ConsulCluster < Inspec.resource(1)
   name 'consul_cluster'
   desc 'Test the configuration of a Consul cluster'
@@ -14,10 +12,6 @@ class ConsulCluster < Inspec.resource(1)
 
   def initialize(url)
     @url = url
-    Diplomat.configure do |config|
-      config.url = @url
-      #config.acl_token =  "xxxxxxxx-yyyy-zzzz-1111-222222222222"
-    end
 
     query = inspec.http(url)
     begin
