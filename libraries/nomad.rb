@@ -6,6 +6,7 @@ class NomadCluster < Inspec.resource(1)
       it { should be_reachable }
       it { should have_leader }
       its('servers_count'){ should be >= 3 }
+      its('nodes_count'){ should eq 2 }
     end
   "
 
@@ -32,6 +33,16 @@ class NomadCluster < Inspec.resource(1)
       servers += 1 unless member['Tags']['role'] != 'nomad' or member['Status'] != 'alive'
     end
     servers
+  end
+
+  def nodes_count
+    nodes = http_json("#{@url}/v1/nodes")
+
+    available_nodes = 0
+    nodes.each do |node|
+      available_nodes += 1 unless node['Status'] != 'ready'
+    end
+    available_nodes
   end
 
   def to_s
