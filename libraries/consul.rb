@@ -5,13 +5,15 @@ class ConsulCluster < Inspec.resource(1)
     describe consul_cluster('http://localhost:8500') do
       it { should be_reachable }
       it { should have_leader }
+      it { should be_allowed_to_list_acls}
       its('servers_count'){ should be >= 3 }
       its('datacenter'){ should include 'dc1' }
     end
   "
 
-  def initialize(url)
+  def initialize(url, token)
     @url = url
+    @headers = {'x-consul-token': token}
 
     query = inspec.http(url)
     begin
@@ -23,6 +25,11 @@ class ConsulCluster < Inspec.resource(1)
 
   def has_leader?
     http_json("#{@url}/v1/status/leader") != ''
+  end
+
+  def allowed_to_list_acls?
+      query = inspec.http("#{@url}/v1/acl/list", headers: @headers)
+      query.status == 200
   end
 
   def servers_count
