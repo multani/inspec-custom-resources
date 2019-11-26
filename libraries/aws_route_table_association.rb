@@ -22,7 +22,7 @@ class AWSRouteTableAssociation < Inspec.resource(1)
   end
 
   def main?
-    @vpc_endpoint.main
+    @route_table_association.main
   end
 
   def id
