@@ -1,24 +1,29 @@
-name: consul
-title: Consul
+name: edgelab-custom
+title: Custom resources from Edgelab
 maintainer: Jonathan Ballet
 copyright: Jonathan ballet
-copyright_email: jon@multani.info
+copyright_email: jballet@edgelab.ch
 license: MIT
-summary: Verify the configuration of a Consul cluster
+summary: Custom InSpec resources from Edgelab
 version: 1.0.0
-#depends:
-#  - name: profile
-#    path: ../path/to/profile
 
-attributes:
+inputs:
   - name: consul_http_addr
     type: string
-    default: http://localhost:8500
+    value: http://localhost:8500
 
   - name: minimum_servers
     type: numeric
-    default: 3
+    value: 3
 
   - name: datacenter
     type: string
-    default: dc1
+    value: dc1
+
+  - name: nomad_addr
+    type: string
+    value: http://nomad.service.consul:4646
+
+  - name: nomad_token
+    type: string
+    value: ""
