@@ -35,6 +35,11 @@ class NomadCluster < Inspec.resource(1)
     servers
   end
 
+  def nodes
+    nodes = http_json("#{@url}/v1/nodes")
+    nodes.map { |node| inspec.nomad_node(@url, node['ID']) }
+  end
+
   def nodes_count
     nodes = http_json("#{@url}/v1/nodes")
 
